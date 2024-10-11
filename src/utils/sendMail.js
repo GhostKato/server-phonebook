@@ -11,6 +11,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+console.log('SMTP Config:', {
+  SMTP_HOST: env(SMTP_ENV_VARS.SMTP_HOST),
+  SMTP_PORT: Number(env(SMTP_ENV_VARS.SMTP_PORT)),
+  SMTP_USER: env(SMTP_ENV_VARS.SMTP_USER),
+});
+
 export const sendEmail = async (options) => {
   return await transporter.sendMail(options);
 };
