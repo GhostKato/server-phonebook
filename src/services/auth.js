@@ -2,8 +2,13 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
-import { FIFTEEN_MINUTES, THIRTY_DAYS } from '../constants/index.js';
+import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, APP_DOMAIN, JWT_SECRET } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
+import { env } from '../utils/env.js';
+import jwt from 'jsonwebtoken';
+import { sendEmail } from '../utils/sendMail.js';
+import { generateResetPasswordEmail } from '../utils/generateResetPaswordEmail.js';
+import { generateResetToken } from '../utils/generateResetToken.js';
 
 const createSession = () => {
   const accessToken = randomBytes(30).toString('base64');
@@ -16,7 +21,6 @@ const createSession = () => {
   };
 };
 
-
 export const registerUser = async (payload) => {
   const existingUser = await UsersCollection.findOne({ email: payload.email });
   if (existingUser) throw createHttpError(409, 'Email in use');
@@ -27,7 +31,6 @@ export const registerUser = async (payload) => {
     password: encryptedPassword,
   });
 };
-
 
 export const loginUser = async ({ email, password }) => {
   const user = await UsersCollection.findOne({ email });
@@ -44,7 +47,6 @@ export const loginUser = async ({ email, password }) => {
     ...newSession,
   });
 };
-
 
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const session = await SessionsCollection.findOne({
@@ -67,7 +69,60 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   });
 };
 
-
 export const logoutUser = async (sessionId) => {
   await SessionsCollection.deleteOne({ _id: sessionId });
+};
+
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const resetLink = `${env( APP_DOMAIN )}/auth/reset-password?token=${generateResetToken( user._id, email )}`;
+
+  try {
+    await sendEmail({
+      from: env(SMTP_ENV_VARS.SMTP_FROM),
+      to: email,
+      subject: 'Reset your password',
+      html: generateResetPasswordEmail({
+        name: user.name,
+        resetLink: resetLink,
+      }),
+    });
+  } catch {
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
+  }
+};
+
+export const resetPassword = async (payload) => {
+  let entries;
+
+  try {
+    entries = jwt.verify(payload.token, env(JWT_SECRET));
+  } catch (err) {
+    if (err instanceof Error)
+      throw createHttpError(401, 'Token is expired or invalid.');
+    throw err;
+  }
+
+  const user = await UsersCollection.findOne({
+    email: entries.email,
+    _id: entries.sub,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
+
+  await UsersCollection.updateOne(
+    { _id: user._id },
+    { password: encryptedPassword },
+  );
 };
