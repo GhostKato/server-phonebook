@@ -7,8 +7,11 @@ import { SessionsCollection } from '../db/models/session.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '../utils/sendMail.js';
-import { generateResetPasswordEmail } from '../utils/generateResetPaswordEmail.js';
-import { generateResetToken } from '../utils/generateResetToken.js';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import handlebars from 'handlebars';
+import { TEMPLATES_PATH } from '../constants/index.js';
+
 
 const createSession = () => {
   const accessToken = randomBytes(30).toString('base64');
@@ -32,6 +35,7 @@ export const registerUser = async (payload) => {
   });
 };
 
+
 export const loginUser = async ({ email, password }) => {
   const user = await UsersCollection.findOne({ email });
   if (!user) throw createHttpError(404, 'User not found');
@@ -47,6 +51,7 @@ export const loginUser = async ({ email, password }) => {
     ...newSession,
   });
 };
+
 
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const session = await SessionsCollection.findOne({
@@ -69,9 +74,11 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   });
 };
 
+
 export const logoutUser = async (sessionId) => {
   await SessionsCollection.deleteOne({ _id: sessionId });
 };
+
 
 export const requestResetToken = async (email) => {
   const user = await UsersCollection.findOne({ email });
@@ -79,17 +86,38 @@ export const requestResetToken = async (email) => {
     throw createHttpError(404, 'User not found');
   }
 
-  const resetLink = `${env( APP_DOMAIN )}/auth/reset-password?token=${generateResetToken( user._id, email )}`;
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    env('JWT_SECRET'),
+    {
+      expiresIn: '5m',
+    },
+  );
+
+  const resetPasswordTemplatePath = path.join(
+    TEMPLATES_PATH,
+    'reset-password-email.html',
+  );
+
+  const templateSource = (
+    await fs.readFile(resetPasswordTemplatePath)
+  ).toString();
+
+  const template = handlebars.compile(templateSource);
+  const html = template({
+    name: user.name,
+    link: `${env(APP_DOMAIN)}/reset-password?token=${resetToken}`,
+  });
 
   try {
     await sendEmail({
       from: env(SMTP_ENV_VARS.SMTP_FROM),
       to: email,
       subject: 'Reset your password',
-      html: generateResetPasswordEmail({
-        name: user.name,
-        resetLink: resetLink,
-      }),
+      html,
     });
   } catch {
     throw createHttpError(
@@ -98,6 +126,7 @@ export const requestResetToken = async (email) => {
     );
   }
 };
+
 
 export const resetPassword = async (payload) => {
   let entries;
