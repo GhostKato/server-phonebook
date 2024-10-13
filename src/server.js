@@ -7,6 +7,7 @@ import { PORT_ENV_VAR } from './constants/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
+import { UPLOAD_PATH } from './constants/index.js';
 
 export const setupServer = () => {
   const app = express();
@@ -24,6 +25,8 @@ export const setupServer = () => {
   );
 
   app.use(router);
+
+  app.use('/uploads', express.static(UPLOAD_PATH));
 
   app.use('*', notFoundHandler);
 
