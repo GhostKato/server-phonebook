@@ -17,17 +17,33 @@ SMTP_PASSWORD: 'SMTP_PASSWORD',
 SMTP_FROM: 'SMTP_FROM',
 };
 
+export const CLOUDINARY_ENV_VARS = {
+  CLOUD_NAME: 'CLOUD_NAME',
+  API_KEY: 'API_KEY',
+  API_SECRET: 'API_SECRET',
+};
+
+export const ENABLE_CLOUDINARY = 'ENABLE_CLOUDINARY';
+
 export const SORT_ORDER = {
   ASC: 'asc',
   DESC: 'desc',
 };
+
 export const FIFTEEN_MINUTES = 15 * 60 * 1000;
 export const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
 
 export const APP_DOMAIN = 'APP_DOMAIN';
+export const BECKEND_DOMAIN = 'BECKEND_DOMAIN';
+
 export const JWT_SECRET = 'JWT_SECRET';
 
 export const TEMPLATES_PATH = path.join(process.cwd(), 'src', 'templates');
+export const TEMP_UPLOAD_PATH = path.join(process.cwd(), 'temp');
+export const UPLOAD_PATH = path.join(process.cwd(), 'uploads');
+
+
+
 
 
 
