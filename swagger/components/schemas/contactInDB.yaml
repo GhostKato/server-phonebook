@@ -1,0 +1,42 @@
+type: object
+properties:
+  _id:
+    description: "Contact's id"
+    type: string
+    example: 6655a67a37bc0571c96d9655
+  name:
+    description: "Contact's name"
+    type: string
+    example: 'Gal Gadot'
+  phoneNumber:
+    description: "Contact's phone number"
+    type: string
+    example: '+380000001888'
+  email:
+    description: "Contact's email"
+    type: string
+    example: 'gal.gadot@gmail.com'
+  isFavourite:
+    description: 'True if contact is favourite'
+    type: boolean
+    example: true
+  contactType:
+    description: "Contact's type"
+    type: string
+    enum: ['work', 'home', 'personal']
+  photo:
+    description: "Link to contact's photo"
+    type: string
+    example: 'https://res.cloudinary.com/dgujs920w/image/upload/v1728963540/a96ewynvumvpdanmw8kn.jpg'
+  userId:
+    description: Contact's user id (internal application data)
+    type: string
+    example: 670cde0c76c237a56bb573d7
+  createdAt:
+    description: Database timestamp (auto-generated)
+    type: string
+    example: '2024-10-15T03:39:01.573Z'
+  updatedAt:
+    description: Database timestamp (auto-generated)
+    type: string
+    example: '2024-10-15T03:39:01.573Z'
