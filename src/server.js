@@ -15,7 +15,11 @@ export const setupServer = () => {
   const app = express();
 
   app.use(express.json());
-  app.use(cors());
+  app.use(cors({
+  origin: 'https://react-hw-mongodb.vercel.app',
+  credentials: true,
+  }));
+
   app.use(cookieParser());
 
   app.use(
