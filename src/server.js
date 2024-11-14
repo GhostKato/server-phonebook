@@ -16,9 +16,10 @@ export const setupServer = () => {
 
   app.use(express.json());
   app.use(cors({
-  origin: 'https://react-hw-mongodb.vercel.app',
+  origin: ['https://app-phonebook.vercel.app', 'http://localhost:5173'],
   credentials: true,
-  }));
+}));
+
 
   app.use(cookieParser());
 
