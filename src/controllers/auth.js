@@ -45,6 +45,10 @@ export const loginUserController = async (req, res) => {
     message: 'Successfully logged in an user!',
     data: {
       accessToken: session.accessToken,
+      user: {
+        name: user.name,
+        email: user.email,
+      },
     },
   });
 };
@@ -134,6 +138,10 @@ export const loginWithGoogleController = async (req, res) => {
     message: 'Successfully logged in via Google OAuth!',
     data: {
       accessToken: session.accessToken,
+       user: {
+        name: user.name,
+        email: user.email,
+      },
     },
   });
 };
