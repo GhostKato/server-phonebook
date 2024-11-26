@@ -13,12 +13,11 @@ export const registerUserController = async (req, res) => {
     );
   }
 
-  const user = await registerUser({ name, email, password });
+  await registerUser({ name, email, password });
 
   res.status(201).json({
     status: 201,
     message: 'Successfully registered a user!',
-    data: user,
   });
 };
 
@@ -30,6 +29,7 @@ export const loginUserController = async (req, res) => {
   }
 
   const session = await loginUser({ email, password });
+  const user = await UsersCollection.findOne(session.userId);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
@@ -46,9 +46,10 @@ export const loginUserController = async (req, res) => {
     data: {
       accessToken: session.accessToken,
       user: {
+        _id: user._id,
         name: user.name,
         email: user.email,
-      },
+           },
     },
   });
 };
@@ -115,6 +116,7 @@ export const resetPasswordController = async (req, res) => {
 };
 
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
+import { UsersCollection } from '../db/models/user.js';
 
 
 export const getGoogleOAuthUrlController = async (req, res) => {
@@ -138,10 +140,6 @@ export const loginWithGoogleController = async (req, res) => {
     message: 'Successfully logged in via Google OAuth!',
     data: {
       accessToken: session.accessToken,
-       user: {
-        name: user.name,
-        email: user.email,
-      },
     },
   });
 };
