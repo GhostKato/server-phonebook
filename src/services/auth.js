@@ -47,12 +47,12 @@ export const loginUser = async ({ email, password }) => {
   await SessionsCollection.deleteMany({ userId: user._id });
 
    const newSession = createSession();
-  const session = await SessionsCollection.create({
+  return SessionsCollection.create({
     userId: user._id,
     ...newSession,
   });
 
-  return { session, user };
+
 };
 
 
@@ -178,10 +178,10 @@ export const loginOrSignupWithGoogle = async (code) => {
   await SessionsCollection.deleteMany({ userId: user._id });
 
   const newSession = createSession();
-  const session = await SessionsCollection.create({
+   return SessionsCollection.create({
     userId: user._id,
     ...newSession,
   });
 
-  return { session, user };
+
 };
