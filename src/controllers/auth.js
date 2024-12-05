@@ -2,6 +2,20 @@ import createHttpError from 'http-errors';
 import { registerUser, refreshUsersSession, logoutUser, requestResetToken, resetPassword, loginOrSignupWithGoogle } from '../services/auth.js';
 import { loginUser } from '../services/auth.js';
 import { THIRTY_DAYS } from '../constants/index.js';
+import { generateAuthUrl } from '../utils/googleOAuth2.js';
+import { UsersCollection } from '../db/models/user.js';
+
+const setupSession = (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + THIRTY_DAYS),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + THIRTY_DAYS),
+  });
+};
+
 
 export const registerUserController = async (req, res) => {
   const { name, email, password } = req.body;
@@ -21,6 +35,7 @@ export const registerUserController = async (req, res) => {
   });
 };
 
+
 export const loginUserController = async (req, res) => {
   const { email, password } = req.body;
 
@@ -31,14 +46,7 @@ export const loginUserController = async (req, res) => {
   const session = await loginUser({ email, password });
   const user = await UsersCollection.findOne(session.userId);
 
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAYS),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAYS),
-  });
+  setupSession(res, session);
 
   res.json({
     status: 200,
@@ -54,16 +62,6 @@ export const loginUserController = async (req, res) => {
   });
 };
 
-const setupSession = (res, session) => {
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAYS),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAYS),
-  });
-};
 
 export const refreshUserSessionController = async (req, res) => {
   const session = await refreshUsersSession({
@@ -92,6 +90,7 @@ export const refreshUserSessionController = async (req, res) => {
     },
   });
 };
+
 
 export const logoutUserController = async (req, res) => {
   if (req.cookies.sessionId) {
@@ -125,9 +124,6 @@ export const resetPasswordController = async (req, res) => {
     data: {},
   });
 };
-
-import { generateAuthUrl } from '../utils/googleOAuth2.js';
-import { UsersCollection } from '../db/models/user.js';
 
 
 export const getGoogleOAuthUrlController = async (req, res) => {
