@@ -71,6 +71,12 @@ export const refreshUserSessionController = async (req, res) => {
     refreshToken: req.cookies.refreshToken,
   });
 
+  const user = await UsersCollection.findOne({ _id: session.userId });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
   setupSession(res, session);
 
   res.json({
@@ -78,6 +84,11 @@ export const refreshUserSessionController = async (req, res) => {
     message: 'Successfully refreshed a session!',
     data: {
       accessToken: session.accessToken,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     },
   });
 };
