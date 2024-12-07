@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { URL_PHOTO } from '../../constants/index.js';
 
 const contactsSchema = new Schema(
   {
@@ -12,6 +13,7 @@ const contactsSchema = new Schema(
     },
     email: {
       type: String,
+      default: 'none',
     },
     isFavourite: {
       type: Boolean,
@@ -27,7 +29,11 @@ const contactsSchema = new Schema(
       required: true,
       ref: 'users',
     },
-       photo: { type: String },
+    photo: {
+      type: String,
+      default: URL_PHOTO,
+    },
+
   },
   {
     timestamps: true,

@@ -5,14 +5,14 @@ import {
   updateContact,
   deleteContact,
 } from '../services/contacts.js';
-import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { saveImage } from '../utils/saveImage.js';
 
 export const getContactsController = async (req, res) => {
 
-  const { page, perPage } = parsePaginationParams(req.query);
+   const filter = parseFilterParams(req.query);
 
-  const contacts = await getAllContacts({page, perPage, userId: req.user._id});
+  const contacts = await getAllContacts({filter, userId: req.user._id});
 
   res.status(200).json({
     status: 200,
@@ -81,9 +81,9 @@ const photo = req.file;
 
 export const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const student = await deleteContact(contactId, req.user._id);
+  const contact = await deleteContact(contactId, req.user._id);
 
-  if (!student) {
+  if (!contact) {
     next(createHttpError(404, 'Contact not found'));
     return;
   }
