@@ -66,6 +66,8 @@ const photo = req.file;
 
   if (photo) {
       photoUrl = await saveImage(photo);
+  } else if (req.body.photo) {
+      photoUrl = req.body.photo;
   } else {
       photoUrl = BASE_URL_PHOTO;
 }
