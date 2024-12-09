@@ -22,3 +22,10 @@ export const updateContactSchema = Joi.object({
     .valid('work', 'home', 'personal')
     .default('personal'),
 });
+
+
+
+
+
+
+

@@ -58,7 +58,7 @@ export const createContactController = async (req, res) => {
   });
 };
 
-export const patchContactController = async (req, res, next) => {
+export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
 const photo = req.file;
@@ -66,9 +66,11 @@ const photo = req.file;
 
   if (photo) {
       photoUrl = await saveImage(photo);
-  } else if (req.body.photo) {
-      photoUrl = req.body.photo;
-  } else {
+  }
+  // else if (req.body.photo) {
+  //     photoUrl = req.body.photo;
+  // }
+  else {
       photoUrl = BASE_URL_PHOTO;
 }
 
@@ -97,3 +99,5 @@ export const deleteContactController = async (req, res, next) => {
 
   res.status(204).send();
 };
+
+

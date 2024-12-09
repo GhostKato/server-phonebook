@@ -6,7 +6,7 @@ import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, APP_DOMAIN, JWT_SECRET } f
 import { SessionsCollection } from '../db/models/session.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
-import { sendEmail } from '../utils/sendMail.js';
+import { sendLetter } from '../utils/sendLetter.js';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
@@ -24,6 +24,7 @@ const createSession = () => {
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
   };
 };
+
 
 export const registerUser = async (payload) => {
   const existingUser = await UsersCollection.findOne({ email: payload.email });
@@ -51,9 +52,8 @@ export const loginUser = async ({ email, password }) => {
     userId: user._id,
     ...newSession,
   });
-
-
 };
+
 
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const session = await SessionsCollection.findOne({
@@ -115,7 +115,7 @@ export const requestResetToken = async (email) => {
   });
 
   try {
-    await sendEmail({
+    await sendLetter({
       from: env(SMTP_ENV_VARS.SMTP_FROM),
       to: email,
       subject: 'Reset your password',
