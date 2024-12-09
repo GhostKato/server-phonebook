@@ -16,7 +16,7 @@ export const setupServer = () => {
 
   app.use(express.json());
   app.use(cors({
-  origin: ['https://app-phonebook.vercel.app', 'http://localhost:5173'],
+  origin: ['https://app-phonebook.vercel.app', 'http://localhost:5174'],
   credentials: true,
 }));
 
