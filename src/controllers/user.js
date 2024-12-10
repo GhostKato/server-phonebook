@@ -1,4 +1,4 @@
-import { sendMessage } from '../services/message.js';
+import { sendMessage } from '../services/user.js';
 
 export const sendMessageController = async (req, res) => {
 
