@@ -10,20 +10,11 @@ import router from './routers/index.js';
 import { UPLOAD_PATH } from './constants/index.js';
 import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
-
 export const setupServer = () => {
   const app = express();
-
   app.use(express.json());
-
-  app.options('*', cors({
-  origin: 'https://app-phonebook.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  }));
-
+  app.use(cors());
   app.use(cookieParser());
-
   app.use(
     pino({
       transport: {
@@ -33,17 +24,12 @@ export const setupServer = () => {
   );
 
   app.use(router);
-
   app.use('/uploads', express.static(UPLOAD_PATH));
-
   app.use('/api-docs', swaggerDocs());
-
   app.use('*', notFoundHandler);
-
   app.use(errorHandler);
 
   const PORT = Number(env(PORT_ENV_VAR, '3000'));
-
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
