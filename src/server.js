@@ -16,7 +16,11 @@ export const setupServer = () => {
 
   app.use(express.json());
 
-  app.use(cors());
+  app.options('*', cors({
+  origin: 'https://app-phonebook.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  }));
 
   app.use(cookieParser());
 
