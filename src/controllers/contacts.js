@@ -8,6 +8,7 @@ import {
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { saveImage } from '../utils/saveImage.js';
 import { BASE_URL_PHOTO } from '../constants/index.js';
+import { ContactsCollection } from '../db/models/contact.js';
 
 export const getContactsController = async (req, res) => {
 
@@ -31,7 +32,7 @@ export const createContactController = async (req, res) => {
   if (photo) {
       photoUrl = await saveImage(photo);
   } else {
-      photoUrl = BASE_URL_PHOTO;
+       photoUrl = req.body.photo || BASE_URL_PHOTO;
 }
 
   if (!name || !phoneNumber || !contactType) {
@@ -59,33 +60,47 @@ export const createContactController = async (req, res) => {
 };
 
 export const updateContactController = async (req, res, next) => {
-  const { contactId } = req.params;
+  try {
+    const { contactId } = req.params;
 
-const photo = req.file;
-  let photoUrl;
+    const contact = await ContactsCollection.findOne({ _id: contactId });
+    if (!contact) {
+      console.log(`Contact with ID ${contactId} not found.`);
+      throw createHttpError(404, 'Contact not found');
+    }
 
-  if (photo) {
-      photoUrl = await saveImage(photo);
+    const oldPhotoUrl = contact.photo;
+
+    const newPhoto = req.file;
+    let photoUrl;
+
+    if (newPhoto) {
+
+      photoUrl = await saveImage(newPhoto);
+    } else {
+      photoUrl = req.body.photo || oldPhotoUrl || BASE_URL_PHOTO;
+
+    }
+
+    const updatedContact = await updateContact(contactId, req.user._id, {
+      ...req.body,
+      photo: photoUrl,
+    });
+
+    if (!updatedContact) {
+      console.log('Failed to update contact.');
+      throw createHttpError(500, 'Failed to update contact');
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully updated the contact!',
+      data: updatedContact,
+    });
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    next(createHttpError(500, 'An error occurred while updating the contact.'));
   }
-  // else if (req.body.photo) {
-  //     photoUrl = req.body.photo;
-  // }
-  else {
-      photoUrl = BASE_URL_PHOTO;
-}
-
-  const updatedContact = await updateContact(contactId, req.user._id, { ...req.body, photo: photoUrl });
-
-  if (!updatedContact) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
-  }
-
-  res.status(200).json({
-    status: 200,
-    message: `Successfully patched a contact!`,
-    data: updatedContact,
-  });
 };
 
 export const deleteContactController = async (req, res, next) => {
