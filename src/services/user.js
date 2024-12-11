@@ -6,6 +6,40 @@ import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import { TEMPLATES_PATH } from '../constants/index.js';
 import { env } from '../utils/env.js';
+import { UsersCollection } from '../db/models/user.js';
+import { hasBrowserCrypto } from 'google-auth-library/build/src/crypto/crypto.js';
+
+
+export const updateUser = async (payload) => {
+  try {
+
+    const user = await UsersCollection.findOne({ _id: payload.userId });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    let encryptedPassword = user.password;
+
+    if (payload.password) {
+      encryptedPassword = await hasBrowserCrypto.hash(payload.password, 10);
+    }
+
+    const updatedUser = await UsersCollection.findOneAndUpdate(
+      { _id: payload.userId },
+      {
+        ...payload,
+        password: encryptedPassword,
+      },
+      { new: true }
+    );
+
+    return updatedUser;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+};
 
 export const sendMessage = async ({ name, email, message }) => {
 

@@ -4,6 +4,7 @@ import { loginUser } from '../services/auth.js';
 import { THIRTY_DAYS } from '../constants/index.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
 import { UsersCollection } from '../db/models/user.js';
+import { BASE_URL_USER_PHOTO } from '../constants/index.js';
 
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
@@ -20,6 +21,8 @@ const setupSession = (res, session) => {
 export const registerUserController = async (req, res) => {
   const { name, email, password } = req.body;
 
+  const photoUrl = BASE_URL_USER_PHOTO;
+
   if (!name || !email || !password) {
     throw createHttpError(
       400,
@@ -27,7 +30,7 @@ export const registerUserController = async (req, res) => {
     );
   }
 
-  await registerUser({ name, email, password });
+  await registerUser({ name, email, photo: photoUrl, password });
 
   res.status(201).json({
     status: 201,
@@ -57,6 +60,7 @@ export const loginUserController = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        photo: user.photo,
            },
     },
   });

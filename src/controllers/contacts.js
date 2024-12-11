@@ -7,7 +7,7 @@ import {
 } from '../services/contacts.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { saveImage } from '../utils/saveImage.js';
-import { BASE_URL_PHOTO } from '../constants/index.js';
+import { BASE_URL_CONTACT_PHOTO } from '../constants/index.js';
 import { ContactsCollection } from '../db/models/contact.js';
 
 export const getContactsController = async (req, res) => {
@@ -32,7 +32,7 @@ export const createContactController = async (req, res) => {
   if (photo) {
       photoUrl = await saveImage(photo);
   } else {
-       photoUrl = req.body.photo || BASE_URL_PHOTO;
+       photoUrl = req.body.photo || BASE_URL_CONTACT_PHOTO;
 }
 
   if (!name || !phoneNumber || !contactType) {
@@ -78,7 +78,7 @@ export const updateContactController = async (req, res, next) => {
 
       photoUrl = await saveImage(newPhoto);
     } else {
-      photoUrl = req.body.photo || oldPhotoUrl || BASE_URL_PHOTO;
+      photoUrl = req.body.photo || oldPhotoUrl || BASE_URL_CONTACT_PHOTO;
 
     }
 
