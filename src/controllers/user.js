@@ -5,9 +5,6 @@ import { saveImage } from '../utils/saveImage.js';
 import { BASE_URL_USER_PHOTO } from '../constants/index.js';
 
 export const updateUserController = async (req, res, next) => {
-  console.log('Request Params:', req.params);
-  console.log('Request Body:', req.body);
-  console.log('Uploaded File:', req.file);
 
   try {
     const { userId } = req.params;
@@ -38,7 +35,7 @@ export const updateUserController = async (req, res, next) => {
       console.log('Failed to update user.');
       throw createHttpError(500, 'Failed to update user');
     }
-    
+
     res.status(200).json({
       status: 200,
       message: 'Successfully updated the user!',

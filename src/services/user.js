@@ -7,7 +7,7 @@ import handlebars from 'handlebars';
 import { TEMPLATES_PATH } from '../constants/index.js';
 import { env } from '../utils/env.js';
 import { UsersCollection } from '../db/models/user.js';
-import { hasBrowserCrypto } from 'google-auth-library/build/src/crypto/crypto.js';
+import bcrypt from 'bcrypt';
 
 
 export const updateUser = async (payload) => {
@@ -22,7 +22,7 @@ export const updateUser = async (payload) => {
     let encryptedPassword = user.password;
 
     if (payload.password) {
-      encryptedPassword = await hasBrowserCrypto.hash(payload.password, 10);
+      encryptedPassword = await bcrypt.hash(payload.password, 10);
     }
 
     const updatedUser = await UsersCollection.findOneAndUpdate(
