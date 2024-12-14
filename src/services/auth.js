@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
-import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, APP_DOMAIN, JWT_SECRET } from '../constants/index.js';
+import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, APP_DOMAIN, JWT_SECRET, BASE_URL_USER_PHOTO } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
@@ -165,11 +165,13 @@ export const loginOrSignupWithGoogle = async (code) => {
   if (!payload) throw createHttpError(401);
 
   let user = await UsersCollection.findOne({ email: payload.email });
+
   if (!user) {
     const password = await bcrypt.hash(randomBytes(10), 10);
     user = await UsersCollection.create({
       email: payload.email,
       name: getFullNameFromGoogleTokenPayload(payload),
+      photo: payload.picture || BASE_URL_USER_PHOTO,
       password,
     });
   }
@@ -177,10 +179,13 @@ export const loginOrSignupWithGoogle = async (code) => {
   await SessionsCollection.deleteMany({ userId: user._id });
 
   const newSession = createSession();
-   return SessionsCollection.create({
-    userId: user._id,
-    ...newSession,
-  });
 
-
+  return {
+    session: await SessionsCollection.create({
+      userId: user._id,
+      ...newSession,
+    }),
+    user,
+  };
 };
+

@@ -22,9 +22,9 @@ export const setupServer = () => {
       },
     }),
   );
-
   app.use(router);
   app.use('/uploads', express.static(UPLOAD_PATH));
+  app.use(express.static('public'));
   app.use('/api-docs', swaggerDocs());
   app.use('*', notFoundHandler);
   app.use(errorHandler);
