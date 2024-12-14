@@ -145,18 +145,13 @@ export const getGoogleOAuthUrlController = async (req, res) => {
 
 export const loginWithGoogleController = async (req, res) => {
   try {
-
     const { code } = req.body;
-
     if (!code) {
       console.error('Missing "code" in the request body');
       return res.status(400).json({ message: 'Missing "code" parameter' });
     }
-
     const { session, user } = await loginOrSignupWithGoogle(code);
-
     setupSession(res, session);
-
     res.json({
       status: 200,
       message: 'Successfully logged in via Google OAuth!',
@@ -165,13 +160,12 @@ export const loginWithGoogleController = async (req, res) => {
         user: {
           name: user.name,
           email: user.email,
-          photo: user.photo,
+          photo: BASE_URL_USER_PHOTO,
           _id: user._id,
         },
       },
     });
   } catch (error) {
-
     return res.status(500).json({
       message: 'Internal server error',
       error: error.message,

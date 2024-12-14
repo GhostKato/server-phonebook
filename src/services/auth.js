@@ -87,7 +87,6 @@ export const requestResetToken = async (email) => {
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
-
   const resetToken = jwt.sign(
     {
       sub: user._id,
@@ -98,22 +97,18 @@ export const requestResetToken = async (email) => {
       expiresIn: '5m',
     },
   );
-
   const resetPasswordTemplatePath = path.join(
     TEMPLATES_PATH,
     'reset-password-email.html',
   );
-
   const templateSource = (
     await fs.readFile(resetPasswordTemplatePath)
   ).toString();
-
   const template = handlebars.compile(templateSource);
   const html = template({
     name: user.name,
     link: `${env(APP_DOMAIN)}/reset-password?token=${resetToken}`,
   });
-
   try {
     await sendLetter({
       from: env(SMTP_ENV_VARS.SMTP_FROM),
@@ -132,7 +127,6 @@ export const requestResetToken = async (email) => {
 
 export const resetPassword = async (payload) => {
   let entries;
-
   try {
     entries = jwt.verify(payload.token, env(JWT_SECRET));
   } catch (err) {
@@ -140,18 +134,14 @@ export const resetPassword = async (payload) => {
       throw createHttpError(401, 'Token is expired or invalid.');
     throw err;
   }
-
   const user = await UsersCollection.findOne({
     email: entries.email,
     _id: entries.sub,
   });
-
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
-
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
-
   await UsersCollection.updateOne(
     { _id: user._id },
     { password: encryptedPassword },
@@ -163,23 +153,17 @@ export const loginOrSignupWithGoogle = async (code) => {
   const loginTicket = await validateCode(code);
   const payload = loginTicket.getPayload();
   if (!payload) throw createHttpError(401);
-
   let user = await UsersCollection.findOne({ email: payload.email });
-
   if (!user) {
     const password = await bcrypt.hash(randomBytes(10), 10);
     user = await UsersCollection.create({
       email: payload.email,
       name: getFullNameFromGoogleTokenPayload(payload),
-      photo: payload.picture || BASE_URL_USER_PHOTO,
       password,
     });
   }
-
   await SessionsCollection.deleteMany({ userId: user._id });
-
   const newSession = createSession();
-
   return {
     session: await SessionsCollection.create({
       userId: user._id,
