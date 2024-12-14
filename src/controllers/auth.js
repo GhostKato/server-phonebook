@@ -166,7 +166,7 @@ export const loginWithGoogleController = async (req, res) => {
           name: user.name,
           email: user.email,
           photo: user.photo,
-          id: user._id,
+          _id: user._id,
         },
       },
     });
@@ -175,7 +175,7 @@ export const loginWithGoogleController = async (req, res) => {
     return res.status(500).json({
       message: 'Internal server error',
       error: error.message,
-      stack: error.stack, 
+      stack: error.stack,
     });
   }
 };
