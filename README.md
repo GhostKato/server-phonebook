@@ -1,99 +1,107 @@
-# Індивідуальний проект: server phonebook
+# Individual project: server phonebook
 
-## Опис
+## Description
 
-Цей проект — серверна частина системи для зберігання, організації та управління тефонними номерами. Сервер забезпечує API, яке дозволяє ефективно працювати з бібліотекою контактів, підтримувати авторизацію користувачів, синхронізацію даних, пошук , а також надає можливість зберігати метадані про контакти, здійснювати фільтрацію та обробку запитів. Сервер обробляє запити від фронтенд-клієнтів, обробляє їх і відповідає відповідними даними.
+This project is the server part of the system for storing, organizing and managing tefon numbers. The server provides an API that allows you to work effectively with the contact library, support user authorization, data synchronization, search, and also provides the ability to store metadata about contacts, filter and process requests. The server processes requests from front-end clients, processes them and responds with the appropriate data.
 
-## Особливості
+## Features
 
-1. **Авторизація та аутентифікація:**
-   - Захищена зміна паролю через токени (JWT) для підвищеного захисту до особистих бібліотек.
-   - Швидка авторизація і вхід через google аккаунти.
+1. **Authorization and authentication:**
 
-2. **Зберігання та управління контактами:**
-   - Контакти зберігаються в базі даних із підтримкою метаданих (ім'я, номер, тип контакту, пошта).   
+   - Secure password change through tokens (JWT) for increased protection of personal libraries.
+   - Quick authorization and login through google accounts.
 
-3. **Фільтрація:**  
-   - Фільтрація за улюбленими контактами.
+2. **Contact Storage and Management:**
 
-4. **API для взаємодії з фронтендом:**
-   - API для виконання основних операцій: додавання нових контактів, видалення, редагування котактів, отримання списку контактів користувача, регістрація користуваття, авторизація користувача, вихід користувача, оновлення данних користувача, відправка повідомлень на пошту, відправка пошти та паролю для зкидування.
-      
-   Приклад ендпойнтів:
-   - `POST /contacts` — додавання нового контакту.
-   - `GET /contacts` — отримання списку контактів та відфільтрованого списку.  
-   - `PATСH /contacts/:id` — оновлення данних контакту.
-   - `DELETE /contacts/:id` — видалення контакту.
-   
-   - `POST /auth/register` — реєстрація нового користувача.
-   - `POST /auth/login` — авторизація користувача.
-   - `POST /auth/logout` — вихід з аккаунту.
-   -  `POST /auth/refresh` — оновлення сесії.
-   -  `POST /auth/send-reset-email` — відправка пошти для зкидування паролю.
-   -  `POST /auth/reset-pwd` — відправка нового паролю.
-  
-   -  `POST /user/:id` — оновлення данних користувача.
-   -  `POST /user/send-message` — відправка повідомлення на пошту.
+   - Contacts are stored in a database with data such as name, number, contact type, mail, and metadata.
 
-5. **Синхронізація з іншими пристроями:**
-   - Підтримка синхронізації книг між кількома пристроями користувача.
-   - Можливість додавання книг до "улюблених".
+3. **Filtering:**
 
-6. **Безпека:**
-   - Захист від SQL-ін’єкцій та інших загроз за допомогою параметризованих запитів.
-   - Використання HTTPS для захищених з'єднань.
-   - Шифрування паролів користувачів за допомогою алгоритмів, таких як bcrypt.
+   - Filter by favorite contacts.
 
-## Архітектура
+4. **API for frontend interaction:**
 
-1. **База даних:**
-   - **MongoDB** 
-   - Таблиці або колекції для зберігання:
-     - **Користувачі**: дані користувачів, обрані контакти.
-     - **Контакти**: данні про контакти.    
+   - Roouts for performing basic operations such as: registration, authorization, update, end of session, sending mail, new password.
 
-2. **Підсистема завантаження та обробки контактів:**
-   - Зберігання файлів книг на сервері або в хмарному сховищі.
-   - Використання бібліотек для роботи з різними форматами книг (наприклад, `epub.js` для EPUB).
+   - `POST /auth/register` — registering a new user.
+   - `POST /auth/login` — user authorization.
+   - `POST /auth/logout` — log out of your account.
+   - `POST /auth/refresh` — session update.
+   - `POST /auth/send-reset-email` — sending mail for password reset.
+   - `POST /auth/reset-pwd` — sending a new password.
 
-3. **Middleware:**  
-   - Використання middleware для перевірки автентичності користувачів, валідації вхідних даних та обробки помилок.
+- Roouts for performing basic operations with contacts such as: giving a contact, receiving a contact list and a filtered list, updating contact data, deleting a contact.
 
-4. **Технології та інструменти:**
-   - **Node.js**: Серверна частина працює на Node.js, що дозволяє обробляти асинхронні запити і забезпечує високу продуктивність.
-   - **Express.js**: Міст для створення RESTful API, надає прості та зручні методи для маршрутизації запитів.
-   - **JWT (JSON Web Tokens)**: для віждновлення паролю.
-   - **Mongoose (для MongoDB)** для роботи з базою даних.
+  - `POST /contacts` — adding a new contact.
+  - `GET /contacts` — getting contact list and filtered list.
+  - `PATСH /contacts/:id` — update contact data.
+  - `DELETE /contacts/:id` — deleting a contact.
 
-## Етапи розробки
+  - Roouts to perform basic user operations, such as updating user data, sending messages to mail.
 
-1. **Проектування API:**
-   - Розробка схем для бази даних.
-   - Описування необхідних ендпойнтів API та їх параметрів.
-   - Розробка middleware для автентифікації та обробки помилок.
+  - `POST /user/:id` — updating user data.
+  - `POST /user/send-message` — sending a message to mail.
 
-2. **Розробка функціоналу:**
-   - Реалізація CRUD операцій для контактів, користувачів.   
-   - Створення механізмів для завантаження і зберігання фотокарток користовача і контакта.
+5. **Safety:**
 
-## Переваги серверної частини
+   - Using HTTPS for Secure Connections.
+   - Encrypting user passwords using algorithms such as bcrypt.
+   - Password recovery via JWT token, which increases the security of data.
 
-- **Масштабованість:** Сервер може обробляти великі обсяги книг і підтримувати тисячі одночасних користувачів.
-- **Зручність:** API дозволяє легко інтегрувати сервер з різними фронтенд-інтерфейсами, мобільними додатками або іншими сервісами.
-- **Безпека:** Використання сучасних методів шифрування та захисту даних гарантує безпеку як книг, так і даних користувачів.
+## Architecture
 
-## Використані технології
+1. **Database:**
 
-1. **Мови програмування:**
-   - **JavaScript** (Node.js)   
+   - **MongoDB**
+   - Collections to store:
+     - **users**: user data.
+     - **contacts**: contact data.
+     - **sessions**: data sessions.
 
-2. **Фреймворки та бібліотеки:**
-   - **Express.js** 
+2. **Storage in the cloud:**
+
+   - Storing photos of users and contacts using cloud storage сloudinary.
+
+3. **Middleware:**
+
+   - Using middleware for user authentication, input validation, and error handling.
+
+4. **Technologies and tools:**
+   - **Node.js**: The server side runs on Node.js, which allows you to handle asynchronous requests and provides high performance.
+   - **Express.js**: Bridge for creating RESTful API, provides simple and convenient methods for routing requests.
+   - **JWT (JSON Web Tokens)**: for password recovery.
+   - **Mongoose (для MongoDB)** to work with the database.
+
+## Stages of development
+
+1. **API Design:**
+
+   - Develop schemas for the database.
+   - Description of required API endpoints and their parameters.
+   - Middleware development for authentication and error handling.
+
+2. **Development of functionality:**
+   - Implementation of operations for contacts, users.
+   - Creating mechanisms for loading and storing user and contact photos.
+
+## Advantages of the server side
+
+- **Scalability:** The server can handle large volumes of contacts and support thousands of simultaneous users.
+- **Convenience:** API makes it easy to integrate the server with various front-end interfaces, mobile applications or other services.
+- **Safety:** The use of modern encryption and data protection methods guarantees the security of both contacts and user data.
+
+## Technologies used
+
+1. **Programming languages:**
+
+   - **JavaScript**
+
+2. **Frameworks and Libraries:**
+
+   - **Express.js**
    - **JWT**
    - **Mongoose**
    - **bcrypt**
 
-3. **База даних:**
+3. **Database:**
    **MongoDB**
-
-
