@@ -1,4 +1,4 @@
-# Individual project: server phonebook
+# Individual project: **server phonebook**
 
 ## Description
 
