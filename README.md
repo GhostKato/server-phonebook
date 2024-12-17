@@ -93,11 +93,10 @@ This project is the server part of the system for storing, organizing and managi
 ## Technologies used
 
 1. **Programming languages:**
-
    - **JavaScript**
 
 2. **Frameworks and Libraries:**
-
+   - **Node.js**
    - **Express.js**
    - **JWT**
    - **Mongoose**
@@ -105,3 +104,15 @@ This project is the server part of the system for storing, organizing and managi
 
 3. **Database:**
    - **MongoDB**
+  
+4. **Safety:**
+   - **OAuth 2.0**
+   - **JWT**
+   - **HTTPS**
+     **bcrypt**
+     
+5. **Other technologies:**
+   - **Git**
+   - **Cloudinary**
+  
+---
