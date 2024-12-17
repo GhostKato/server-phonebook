@@ -116,3 +116,5 @@ This project is the server part of the system for storing, organizing and managi
    - **Cloudinary**
   
 ---
+
+The project is developing a server for managing contacts through the API, with support for authorization through JWT and Google. It provides contact storage in MongoDB, filtering, data updates and password recovery. For security, HTTPS, bcrypt and cloud storage of photos via Cloudinary are used. The project is focused on scalability, ease of integration and a high level of data protection.
