@@ -104,4 +104,4 @@ This project is the server part of the system for storing, organizing and managi
    - **bcrypt**
 
 3. **Database:**
-   **MongoDB**
+   - **MongoDB**
