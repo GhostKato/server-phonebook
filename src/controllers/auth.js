@@ -9,11 +9,15 @@ import { BASE_URL_USER_PHOTO } from '../constants/index.js';
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
+    secure: true,
     expires: new Date(Date.now() + THIRTY_DAYS),
+    sameSite: 'None',
   });
   res.cookie('sessionId', session._id, {
     httpOnly: true,
+    secure: true,
     expires: new Date(Date.now() + THIRTY_DAYS),
+    sameSite: 'None',
   });
 };
 
