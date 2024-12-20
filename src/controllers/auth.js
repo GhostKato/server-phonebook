@@ -164,7 +164,7 @@ export const loginWithGoogleController = async (req, res) => {
         user: {
           name: user.name,
           email: user.email,
-          photo: BASE_URL_USER_PHOTO,
+          photo: user.photo || BASE_URL_USER_PHOTO,
           _id: user._id,
         },
       },
