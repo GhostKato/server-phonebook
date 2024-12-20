@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is the server part of the system for storing, organizing and managing tefon numbers. The server provides an API that allows you to work effectively with the contact library, support user authorization, data synchronization, search, and also provides the ability to store metadata about contacts, filter and process requests. The server processes requests from front-end clients, processes them and responds with the appropriate data.
+This project is the server part of the system for storing, organizing and managing telephone numbers. The server provides an API that allows you to work effectively with the contact library, support user authorization, data synchronization, search, and also provides the ability to store metadata about contacts, filter and process requests. The server processes requests from front-end clients, processes them and responds with the appropriate data.
 
 ## Features
 
@@ -93,15 +93,28 @@ This project is the server part of the system for storing, organizing and managi
 ## Technologies used
 
 1. **Programming languages:**
-
    - **JavaScript**
 
 2. **Frameworks and Libraries:**
-
+   - **Node.js**
    - **Express.js**
    - **JWT**
    - **Mongoose**
    - **bcrypt**
 
 3. **Database:**
-   **MongoDB**
+   - **MongoDB**
+  
+4. **Safety:**
+   - **OAuth 2.0**
+   - **JWT**
+   - **HTTPS**
+     **bcrypt**
+     
+5. **Other technologies:**
+   - **Git**
+   - **Cloudinary**
+  
+---
+
+The project is developing a server for managing contacts through the API, with support for authorization through JWT and Google. It provides contact storage in MongoDB, filtering, data updates and password recovery. For security, HTTPS, bcrypt and cloud storage of photos via Cloudinary are used. The project is focused on scalability, ease of integration and a high level of data protection.
