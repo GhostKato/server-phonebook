@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is the server part of the system for storing, organizing and managing telephone numbers. The server provides an API that allows you to work effectively with the contact library, support user authorization, data synchronization, search, and also provides the ability to store metadata about contacts, filter and process requests. The server processes requests from front-end clients, processes them and responds with the appropriate data.
+This project is the server part of the system for storing, organizing and managing telephone numbers. The server provides an API that allows you to work effectively with the contact library, support user authorization, data synchronization, search, and also provides the ability to store metadata about contacts, filter and process requests. The server processes requests from front-end clients, processes them, and responds with the appropriate data.
 
 ## Features
 
